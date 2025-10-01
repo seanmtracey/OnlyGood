@@ -1,5 +1,10 @@
-html{
+*[data-active="false"]{
+    display: none;
+    opacity: 0;
+}
 
+html{
+    font-family: "Lexend";
 }
 
 body{
@@ -32,6 +37,81 @@ main section#sources{
     width: 15%;
     height: 100dvh;
     background-color: transparent;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+
+main section#sources div#feedTitle{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1em;
+}
+
+main section#sources div#feedTitle h3{
+    font-family: "Lexend", sans-serif;
+    margin: 0;
+    color: white;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+main section#sources div#feedTitle button{
+    background-color: transparent;
+    border: 0;
+    height: 1.5em;
+    width: 1.5em;
+    padding: 0;
+    cursor: pointer;
+}
+
+main section#sources div#feedTitle button img{
+    height: 100%;
+}
+
+main section#sources ol{
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+main section#sources ol li{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color: blue; */
+    font-family: "Lexend";
+    color: white;
+    font-size: 0.8em;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin-bottom: 0.75em;
+}
+
+main section#sources ol li img{
+    height: 1em;
+}
+
+main section#sources ol li p{
+    margin: 0;
+    margin-left: 1em;
+    width: 100%;
+}
+
+main section#sources ol li span{
+    width: 1em;
+    height: 1em;
+    background-color: lightgreen;
+    border-radius: 100%;
+    align-self: flex-end;
+    justify-self: flex-end;
+    display: block;
+    min-width: 1em;
+    min-height: 1em;
 }
 
 main section#feed{
@@ -53,15 +133,19 @@ main section#feed article{
     color: white;
     line-height: 1.75em;
     padding: 3px;
+    margin-bottom: 1em;
+    cursor: pointer;
+    transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
 }
 
-main section#feed article:hover{
-    cursor: pointer;
-    opacity: 1;
+main section#feed article[data-selected="false"]:hover{
+    opacity: 1.0;
+    transform: scale(0.95);
 }
 
 main section#feed article[data-selected="false"]{
-    /* opacity: 0.5; */
+    opacity: 0.5;
+    transform: scale(0.9);
 }
 
 main section#feed article[data-sentiment="unknown"]{
@@ -69,7 +153,7 @@ main section#feed article[data-sentiment="unknown"]{
 }
 
 main section#feed article[data-sentiment="positive"]{
-    background-image: conic-gradient(from 40deg, lightgreen, green, lightgreen);
+    background-image: conic-gradient(from -45deg, #92d5c1, #5cd551, #92d5c1);
 }
 
 main section#feed article .articleContent{
@@ -85,25 +169,49 @@ main section#feed article .imageHolder{
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 main section#feed article .imageHolder img{
     width: 100%;
 }
 
+main section#feed article .imageHolder .shadow{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
 main section#feed article .content{
     background-color: #303030;
     padding: 0.5em;
     box-sizing: border-box;
+    margin-top: 2px;
 }
 
 main section#feed article .content h1{
     margin: 0;
+    font-family: "Newsreader", serif;
+    font-weight: 400;
 }
 
 main section#viewer{
     width: 60%;
     background-color: #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+main section#viewer h1{
+    font-family: "Newsreader";
+    font-weight: 100;
+    color: rgba(255, 255, 255, 0.37);
+    text-align: center;
+    max-width: 15em;
+    line-height: 1.3em;
 }
 
 main section#viewer iframe{
@@ -111,4 +219,5 @@ main section#viewer iframe{
     width: 100%;
     height: 100dvh;
     border-left: 1px solid rgba(255, 255, 255, 0.29);
+    position: absolute;
 }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel='stylesheet' href='/src/assets/stylesheets/newsreader.css' />
     <link rel='stylesheet' href='/src/assets/stylesheets/styles.css' />
     <title>OnlyGood</title>
 </head>
@@ -12,16 +13,56 @@
         
         <section id="sources">
 
+            <div id="feedTitle">
+                <h3>Feeds</h3>
+                <button id="addFeed">
+                    <img src="/src/assets/images/add_icon.png" />
+                </button>
+            </div>
+
+            <ol>
+                <li data-src="https://feeds.bbci.co.uk/news/rss.xml">
+                    <img src="https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif" />
+                    <p>BBC News</p>
+                    <span data-sentiment="positive"></span>
+                </li>
+
+                <li data-src="https://feeds.bbci.co.uk/news/rss.xml">
+                    <img src="https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif" />
+                    <p>BBC News</p>
+                    <span data-sentiment="positive"></span>
+                </li>
+
+            </ol>
+
         </section>
 
         <section id="feed">
 
-            <article class="piece" data-sentiment="unknown" data-selected="true">
+            <article class="piece" data-src="https://fledgling.cloud" data-sentiment="positive" data-selected="false">
 
                 <div class="articleContent">
 
                     <div class="imageHolder">
                         <img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d446/live/7365eac0-9e40-11f0-b0fc-395f3bc1ac43.jpg" />
+                        <div class="shadow"></div>
+                    </div>
+    
+                    <div class="content">
+                        <h1>'Buy one, get one free' deals for unhealthy food banned </h1>
+                    </div>
+
+                </div>
+
+            </article>
+
+            <article class="piece" data-src="https://smt.codes" data-sentiment="unknown" data-selected="false">
+
+                <div class="articleContent">
+
+                    <div class="imageHolder">
+                        <img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d446/live/7365eac0-9e40-11f0-b0fc-395f3bc1ac43.jpg" />
+                        <div class="shadow"></div>
                     </div>
     
                     <div class="content">
@@ -35,7 +76,8 @@
         </section>
 
         <section id="viewer">
-            <iframe src="https://smt.codes/"></iframe>
+            <h1>Select an article from your feed to view the content</h1>
+            <iframe src="" data-active="false"></iframe>
         </section>
 
     </main>
