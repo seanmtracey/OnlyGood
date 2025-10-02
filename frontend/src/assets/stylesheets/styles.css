@@ -39,6 +39,7 @@ main section#sources{
     background-color: transparent;
     padding: 1em;
     box-sizing: border-box;
+    padding-top: 2.5em;
 }
 
 
@@ -89,7 +90,11 @@ main section#sources ol li{
     font-size: 0.8em;
     box-sizing: border-box;
     cursor: pointer;
-    margin-bottom: 0.75em;
+    margin-bottom: 0.95em;
+}
+
+main section#sources ol li:hover p{
+    color: white;    
 }
 
 main section#sources ol li img{
@@ -100,6 +105,9 @@ main section#sources ol li p{
     margin: 0;
     margin-left: 1em;
     width: 100%;
+    font-size: 0.8em;
+    font-weight: 200;
+    color: rgba(255,255,255,0.5);
 }
 
 main section#sources ol li span{
@@ -117,9 +125,10 @@ main section#sources ol li span{
 main section#feed{
     width: 25%;
     height: 100dvh;
-    background-color: #181818;
+    background-color: rgba(0,0,0,.61);
     box-sizing: border-box;
     padding: 1em;
+    border-right: 1px solid rgba(255,255,255,0.1);
 }
 
 main section#feed article{
@@ -198,7 +207,7 @@ main section#feed article .content h1{
 
 main section#viewer{
     width: 60%;
-    background-color: #1e1e1e;
+    background-color: rgba(0,0,0,0.55);
     display: flex;
     align-items: center;
     justify-content: center;
