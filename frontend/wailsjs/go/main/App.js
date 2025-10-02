@@ -5,3 +5,7 @@
 export function Echo(arg1) {
   return window['go']['main']['App']['Echo'](arg1);
 }
+
+export function GetArticles() {
+  return window['go']['main']['App']['GetArticles']();
+}

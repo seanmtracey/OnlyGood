@@ -1,3 +1,13 @@
+*{
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+}
+
 *[data-active="false"]{
     display: none;
     opacity: 0;
@@ -87,7 +97,7 @@ main section#sources ol li{
     /* background-color: blue; */
     font-family: "Lexend";
     color: white;
-    font-size: 0.8em;
+    font-size: 0.9em;
     box-sizing: border-box;
     cursor: pointer;
     margin-bottom: 0.95em;
@@ -127,82 +137,160 @@ main section#feed{
     height: 100dvh;
     background-color: rgba(0,0,0,.61);
     box-sizing: border-box;
-    padding: 1em;
     border-right: 1px solid rgba(255,255,255,0.1);
 }
 
-main section#feed article{
+main section#feed #feedTitle{
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em;
+}
+
+main section#feed #feedTitle h1{
+    color: white;
+    font-weight: 600;
+    font-family: "Lexend";
+    margin: 0;
+    font-size: 1.2em;
+    cursor: default;
+}
+
+main section#feed #feedTitle span{
+    font-size: 0.5em;
+    color: rgba(255,255,255,0.5);
+    cursor: default;
+}
+
+main section#feed #feedScroller{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+main section#feed article.piece{
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    flex-direction: column;
-    border-radius: 5px;
+    flex-direction: row;
     box-sizing: border-box;
     overflow: hidden;
     color: white;
     line-height: 1.75em;
-    padding: 3px;
-    margin-bottom: 1em;
     cursor: pointer;
     transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+    background-color: rgba(255,255,255,0.1);
 }
 
-main section#feed article[data-selected="false"]:hover{
-    opacity: 1.0;
-    transform: scale(0.95);
+main section#feed article.piece:nth-of-type(even){
+    background-color: rgba(255,255,255,0.05);
 }
 
-main section#feed article[data-selected="false"]{
-    opacity: 0.5;
-    transform: scale(0.9);
+main section#feed article.piece[data-sentiment="positive"] .sentimentIndicator{
+    background-image: linear-gradient(#5cd551, #92d5c1);
 }
 
-main section#feed article[data-sentiment="unknown"]{
-    background-image: conic-gradient(from 40deg, grey, grey, grey);
+main section#feed article.piece[data-sentiment="positive"] .score{
+    color: #5cd551;
 }
 
-main section#feed article[data-sentiment="positive"]{
-    background-image: conic-gradient(from -45deg, #92d5c1, #5cd551, #92d5c1);
+main section#feed article.piece[data-sentiment="middling"] .sentimentIndicator{
+    background-image: linear-gradient(#ffc207, #f7f41c);
 }
 
-main section#feed article .articleContent{
-    border-radius: 3.75px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.35);
+main section#feed article.piece[data-sentiment="middling"] .score{
+    color: #ffc207;
 }
 
-main section#feed article .imageHolder{
-    width: 100%;
-    height: 100px;
-    overflow: hidden;
+main section#feed article.piece[data-sentiment="middling"][data-selected="true"] .score{
+    color: #ff8a06;
+}
+
+main section#feed article.piece[data-sentiment="negative"] .sentimentIndicator{
+    background-image: linear-gradient(#ad152e, #ef1f42);
+}
+
+main section#feed article.piece[data-sentiment="negative"] .score{
+    color: #ef1f42;
+}
+
+main section#feed article.piece .articleContent{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-main section#feed article .imageHolder img{
+    flex-direction: row;
     width: 100%;
+    padding-right: 0.5em;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-main section#feed article .imageHolder .shadow{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg,rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+main section#feed article.piece[data-selected="true"] .articleContent{
+    background-color: white;
 }
 
-main section#feed article .content{
-    background-color: #303030;
-    padding: 0.5em;
-    box-sizing: border-box;
-    margin-top: 2px;
+main section#feed article.piece[data-selected="true"] .articleContent .content .topSection h1{
+    color: black;
+    font-weight: 600;
 }
 
-main section#feed article .content h1{
+main section#feed article.piece .articleContent .sentimentIndicator{
+    min-width: 15px;
+    background-color: grey;
+    margin-right: 0.5em;
+}
+
+main section#feed article.piece .articleContent .content .topSection{
+    display: flex;
+    padding: 1em 0 0.5em;
+}
+
+main section#feed article.piece .articleContent .content .topSection h1{
+    font-family: "Newsreader";
     margin: 0;
-    font-family: "Newsreader", serif;
+    line-height: 1.4em;
+    font-size: 1.1em;
+    font-weight: 200;
+    max-width: 95%;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+main section#feed article.piece .articleContent .content .topSection .newIndicator{
+    align-self: flex-end;
+    display: block;
+    min-width: 10px;
+    min-height: 10px;
+    background: grey;
+    border-radius: 100%;
+}
+
+main section#feed article.piece .articleContent .content .topSection .newIndicator[data-read="false"]{
+    background-color: #3782ff;
+}
+
+main section#feed article.piece .articleContent .content .bottomSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+main section#feed article.piece .articleContent .content .bottomSection .lastUpdate{
+    color: #aaa;
     font-weight: 400;
+}
+
+main section#feed article.piece[data-selected="true"] .articleContent .content .bottomSection .lastUpdate{
+    color: #787878;
 }
 
 main section#viewer{

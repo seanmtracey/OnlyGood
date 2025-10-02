@@ -1,6 +1,7 @@
 import { Echo } from '../wailsjs/go/main/App';
+import { GetArticles } from '../wailsjs/go/main/App';
 
-(function(){
+(async function(){
 
     'use strict';
 
@@ -42,15 +43,17 @@ import { Echo } from '../wailsjs/go/main/App';
             });
             
             iframe.addEventListener('error', (e) => {
-                console.error('Iframe error:', e);
+                // console.error('Iframe error:', e);
             });
-
-            document.querySelector("iframe").dataset.active = "true";
+            
+            viewer.querySelector("h1").dataset.active = "false";
+            viewer.querySelector("iframe").dataset.active = "true";
 
         }, false);
 
     });
 
+    console.log(await GetArticles());
     console.log("Ready.");
 
 }());
