@@ -212,6 +212,8 @@ main section#viewer{
     align-items: center;
     justify-content: center;
     position: relative;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 main section#viewer h1{
@@ -230,4 +232,5 @@ main section#viewer iframe{
     /* border-left: 1px solid rgba(255, 255, 255, 0.29); */
     position: absolute;
     border-radius: 15px;
+    pointer-events: none;
 }

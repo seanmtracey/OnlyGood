@@ -4,9 +4,15 @@ import { Echo } from '../wailsjs/go/main/App';
 
     'use strict';
 
+    const viewer = document.querySelector("section#viewer");
     const articles = document.querySelectorAll("article");
 
     console.log(articles);
+
+    viewer.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    }, true);
 
     Array.from(articles).forEach(article => {
 
