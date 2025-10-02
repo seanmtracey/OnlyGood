@@ -2,6 +2,8 @@ module changeme
 
 go 1.23.7
 
+// replace github.com/wailsapp/wails/v2 v2.10.2 => /Users/seanmtracey/go/pkg/mod
+
 require github.com/wailsapp/wails/v2 v2.10.2
 
 require (
@@ -33,5 +35,3 @@ require (
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 )
-
-// replace github.com/wailsapp/wails/v2 v2.10.2 => /Users/seanmtracey/go/pkg/mod

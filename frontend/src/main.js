@@ -23,7 +23,22 @@ import { Echo } from '../wailsjs/go/main/App';
 
             this.dataset.selected = "true";
 
-            document.querySelector("iframe").src = this.dataset.src;
+            // document.querySelector("iframe").src = this.dataset.src;
+
+            const iframe = document.querySelector("iframe");
+
+            const proxyURL = `/api/proxy?url=${encodeURIComponent(this.dataset.src)}`;
+            iframe.src = proxyURL;
+            
+            // Optional: Add load handlers
+            iframe.addEventListener('load', () => {
+                console.log('Iframe loaded:', targetURL);
+            });
+            
+            iframe.addEventListener('error', (e) => {
+                console.error('Iframe error:', e);
+            });
+
             document.querySelector("iframe").dataset.active = "true";
 
         }, false);
