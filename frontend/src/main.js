@@ -116,7 +116,7 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
 
             const feedItemTemplate = document.createElement("template");
             const feedItemTemplateContent = `
-                <li data-src="${thisFeed.url}" data-name="${thisFeed.name}">
+                <li data-hash="${thisFeed.hash}" data-src="${thisFeed.url}" data-name="${thisFeed.name}">
                     <img src="${thisFeed.icon}" />
                     <p>${thisFeed.name}</p>
                     <span data-sentiment="positive"></span>

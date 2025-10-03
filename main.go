@@ -9,6 +9,7 @@ import (
 
 	"onlygood/lib/app"
 	"onlygood/lib/feeds"
+	"onlygood/lib/database"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -108,6 +109,7 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	database.InitDB()
 	app := app.NewApp()
 	feedsInterface := feeds.NewFeedsInterface()
 

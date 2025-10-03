@@ -31,6 +31,7 @@ export namespace feeds {
 	    name: string;
 	    url: string;
 	    icon: string;
+	    hash: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Feed(source);
@@ -41,6 +42,7 @@ export namespace feeds {
 	        this.name = source["name"];
 	        this.url = source["url"];
 	        this.icon = source["icon"];
+	        this.hash = source["hash"];
 	    }
 	}
 
