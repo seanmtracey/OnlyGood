@@ -302,6 +302,7 @@ main section#feed article.piece .articleContent .content .topSection h1{
     max-width: 95%;
 
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -372,10 +373,10 @@ main section#viewer iframe{
     pointer-events: none;
 }
 
-main section#viewer iframe[src=""]{
-    /* background-color: rgba(255,255,255,0.05); */
-    /* background-color: red; */
-}
+/* main section#viewer iframe[src=""]{
+    background-color: rgba(255,255,255,0.05);
+    background-color: red;
+} */
 
 .overlay{
     display: flex;
