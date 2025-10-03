@@ -184,12 +184,13 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
         e.preventDefault();
         e.stopImmediatePropagation();
 
-        const rssAddr = this.querySelector(`input[type="url"]`).value;
+        const feedName = this.querySelector(`input[name="name"]`).value; 
+        const rssAddr = this.querySelector(`input[name="url"]`).value;
 
         console.log(rssAddr);
 
         AddFeed({
-                name : "Test Feed",
+                name : feedName,
                 url : rssAddr
             })
             .then(result => {

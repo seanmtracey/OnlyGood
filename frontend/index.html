@@ -83,7 +83,12 @@
                 <img src="/src/assets/images/close_icon.png" />
             </button>
             <h2>Add Feed</h2>
-            <input type="url" placeholder="Enter the RSS Feed URL here..." required/>
+
+            <label>Feed Name</label>
+            <input type="text" name="name" placeholder="Name this RSS Feed..." required/>
+
+            <label>RSS Feed URL</label>
+            <input type="url" name="url" placeholder="Enter the RSS Feed URL here..." required/>
             <input type="submit" value="Save" />
         </form>
 
