@@ -1,8 +1,10 @@
 package feeds
 
 import(
-	"context"
 	"log"
+	"context"
+	"crypto/sha1"
+	"encoding/hex"
 
 	"onlygood/lib/database"
 )
@@ -70,6 +72,10 @@ func (f *Feeds) ListFeeds() []Feed {
 func (f *Feeds) AddFeed(feed Feed) error {
 
 	db := database.Get()
+	
+	hasher := sha1.New()
+	hasher.Write([]byte(feed.URL))
+	feed.Hash = hex.EncodeToString(hasher.Sum(nil))
 	
 	query := `INSERT INTO feeds (name, url, icon, hash) VALUES (?, ?, ?, ?)`
 	

@@ -40,10 +40,10 @@ func InitDB() {
 	createFeedsTableQuery := `
 	CREATE TABLE IF NOT EXISTS feeds (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT UNIQUE NOT NULL,
+		name TEXT NOT NULL,
 		url TEXT NOT NULL,
 		icon TEXT NOT NULL,
-		hash TEXT NOT NULL
+		hash TEXT UNIQUE NOT NULL
 	);
 	`
 

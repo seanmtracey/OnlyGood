@@ -176,7 +176,8 @@ main section#sources ol li:hover p{
 }
 
 main section#sources ol li img{
-    width: 2em;
+    width: 1em;
+    max-height: 1em;
 }
 
 main section#sources ol li p{

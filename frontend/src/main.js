@@ -1,6 +1,6 @@
 import { WindowToggleMaximise } from '../wailsjs/runtime/runtime'
 import { GetArticles, Echo } from '../wailsjs/go/app/App'
-import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
+import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
 
 (async function(){
 
@@ -13,6 +13,8 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
     
     const addFeedBtn = sources.querySelector("button#addFeedBtn");
     const dialogBtns = Array.from(document.querySelectorAll(".overlay button.close"));
+
+    const addFeedOverlay = document.querySelector(".overlay#addFeed");
 
     viewer.addEventListener("click", function(e){
         e.preventDefault();
@@ -114,6 +116,10 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
 
         feeds.forEach(thisFeed => {
 
+            if(!thisFeed.icon){
+                thisFeed.icon = "/src/assets/images/rss_icon.png";
+            }
+
             const feedItemTemplate = document.createElement("template");
             const feedItemTemplateContent = `
                 <li data-hash="${thisFeed.hash}" data-src="${thisFeed.url}" data-name="${thisFeed.name}">
@@ -172,6 +178,35 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
         }, false);
 
     });
+
+    addFeedOverlay.querySelector("form").addEventListener("submit", function(e){
+        
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        const rssAddr = this.querySelector(`input[type="url"]`).value;
+
+        console.log(rssAddr);
+
+        AddFeed({
+                name : "Test Feed",
+                url : rssAddr
+            })
+            .then(result => {
+                console.log(result);
+                return ListFeeds();
+            })
+            .then(feeds => {
+                processFeeds(feeds);
+                addFeedOverlay.dataset.active = "false";
+                this.reset();
+            })
+            .catch(err => {
+                console.log("AddFeed err:", err);
+            })
+        ;
+
+    })
 
     stretchWindow.addEventListener("click", function(e){
 
