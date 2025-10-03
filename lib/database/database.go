@@ -11,6 +11,10 @@ import(
 
 var db *sql.DB
 
+func Get() *sql.DB {
+	return db
+}
+
 func InitDB() {
 
 	homeDir, homeDirErr := os.UserHomeDir()

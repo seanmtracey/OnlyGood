@@ -2,6 +2,9 @@ package feeds
 
 import(
 	"context"
+	"log"
+
+	"onlygood/lib/database"
 )
 
 type Feeds struct {
@@ -34,8 +37,27 @@ func NewFeedsInterface() *Feeds {
 	return &Feeds{}
 }
 
-func (f *Feeds) ListFeeds() []Feed{
+func (f *Feeds) ListFeeds(hash string) ([]Feed){
+
+	db := database.Get()
+	var feeds []Feed
+
+	rows, err := db.Query("SELECT * FROM feeds")
+	if err != nil {
+		log.Printf("Failed to list routes: %v", err)
+		return feeds
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var feed Feed
+		err := rows.Scan(&feed)
+		if err != nil {
+			log.Printf("Failed to scan row: %v", err)
+			continue
+		}
+		feeds = append(feeds, feed)
+	}
 
 	return feeds
-
 }
