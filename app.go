@@ -11,10 +11,12 @@ type App struct {
 }
 
 type Article struct {
-	Title string
-	Content string
-	Sentiment float64
-	URL string
+	Title string `json:"title"`
+	Content string `json:"content"`
+	SentimentGroup string `json:"sentimentGroup"`
+	SentimentScore float64 `json:"sentimentScore"`
+	URL string `json:"url"`
+	AlreadyRead bool `json:"alreadyRead"`
 }
 
 // NewApp creates a new App application struct
@@ -39,14 +41,26 @@ func (a *App)GetArticles() []Article{
 		{
 			Title: "Eyewitnesses describe Manchester synagogue attack",
 			Content: "Some content",
-			Sentiment: 0.25,
+			SentimentGroup: "negative",
+			SentimentScore: 0.25,
 			URL: "https://www.bbc.co.uk/news/articles/cn0rp05ykx7o",
+			AlreadyRead: false,
 		},
 		{
 			Title: "Unmasked: Secret BBC filming exposes hidden culture of misogyny and racism inside Met Police",
 			Content: "More content",
-			Sentiment: 0.35,
+			SentimentGroup: "middling",
+			SentimentScore: 0.55,
 			URL: "https://www.bbc.co.uk/news/articles/cvgq06d44jyo",
+			AlreadyRead: true,
+		},
+		{
+			Title: "Unmasked: Secret BBC filming exposes hidden culture of misogyny and racism inside Met Police",
+			Content: "More content",
+			SentimentGroup: "positive",
+			SentimentScore: 0.75,
+			URL: "https://www.bbc.co.uk/news/articles/cvgq06d44jyo",
+			AlreadyRead: true,
 		},
 	}
 

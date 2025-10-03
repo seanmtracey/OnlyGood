@@ -1,10 +1,12 @@
 export namespace main {
 	
 	export class Article {
-	    Title: string;
-	    Content: string;
-	    Sentiment: number;
-	    URL: string;
+	    title: string;
+	    content: string;
+	    sentimentGroup: string;
+	    sentimentScore: number;
+	    url: string;
+	    alreadyRead: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Article(source);
@@ -12,10 +14,12 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.Title = source["Title"];
-	        this.Content = source["Content"];
-	        this.Sentiment = source["Sentiment"];
-	        this.URL = source["URL"];
+	        this.title = source["title"];
+	        this.content = source["content"];
+	        this.sentimentGroup = source["sentimentGroup"];
+	        this.sentimentScore = source["sentimentScore"];
+	        this.url = source["url"];
+	        this.alreadyRead = source["alreadyRead"];
 	    }
 	}
 

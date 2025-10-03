@@ -67,6 +67,7 @@ main section#sources div#feedTitle h3{
     color: white;
     font-size: 1em;
     font-weight: 400;
+    cursor: default;
 }
 
 main section#sources div#feedTitle button{
@@ -321,4 +322,9 @@ main section#viewer iframe{
     position: absolute;
     border-radius: 15px;
     pointer-events: none;
+}
+
+main section#viewer iframe[src=""]{
+    /* background-color: rgba(255,255,255,0.05); */
+    /* background-color: red; */
 }

@@ -5,55 +5,109 @@ import { GetArticles } from '../wailsjs/go/main/App';
 
     'use strict';
 
+    const feed = document.querySelector("section#feed");
     const viewer = document.querySelector("section#viewer");
-    const articles = document.querySelectorAll("article");
-
-    console.log(articles);
+    // const articles = document.querySelectorAll("article");
 
     viewer.addEventListener("click", function(e){
         e.preventDefault();
         e.stopImmediatePropagation();
     }, true);
 
-    Array.from(articles).forEach(article => {
+    
+    function processArticles(articles){
+        
+        console.log("articles:", articles);
+        const feedScroller = feed.querySelector("#feedScroller");
 
-        article.addEventListener("click", function(e){
+        const docFrag = document.createDocumentFragment();
+
+        articles.forEach(article => {
             
-            console.log(this);
+            const articleTemplate = document.createElement("template");
+            const articleTemplateContent = `
 
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            articles.forEach(article => {
-                article.dataset.selected = "false";
-            });
-
-            this.dataset.selected = "true";
-
-            // document.querySelector("iframe").src = this.dataset.src;
-
-            const iframe = document.querySelector("iframe");
-
-            const proxyURL = `/api/proxy?url=${encodeURIComponent(this.dataset.src)}`;
-            iframe.src = proxyURL;
+                <article class="piece" data-src="${article.url}" data-sentiment="${article.sentimentGroup}" data-selected="false">
+    
+                    <div class="articleContent">
+    
+                        <div class="sentimentIndicator"></div>
+                        
+                        <div class="content">
+                            
+                            <div class="topSection">
+                                <h1>${article.title}</h1>
+                                <div class="newIndicator" data-read="${article.alreadyRead}"></div>
+                            </div>
+                            <div class="bottomSection">
+                                <span class="score">${article.sentimentScore * 100 | 0}% Positive</span>
+                                <span class="lastUpdate">5 minutes ago</span>
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </article>
             
-            // Optional: Add load handlers
-            iframe.addEventListener('load', () => {
-                console.log('Iframe loaded:', targetURL);
-            });
-            
-            iframe.addEventListener('error', (e) => {
-                // console.error('Iframe error:', e);
-            });
-            
-            viewer.querySelector("h1").dataset.active = "false";
-            viewer.querySelector("iframe").dataset.active = "true";
+            `;
 
-        }, false);
+            articleTemplate.innerHTML = articleTemplateContent;
 
-    });
+            const articleNode = articleTemplate.content.cloneNode(true);
+            const articleEl = articleNode.querySelector("article");
+            console.log("articleEl:", articleEl);
 
-    console.log(await GetArticles());
+            articleEl.addEventListener("click", function(e){
+                
+                console.log(this);
+    
+                e.preventDefault();
+                e.stopImmediatePropagation();
+    
+                Array.from(feed.querySelectorAll("article")).forEach(article => {
+                    article.dataset.selected = "false";
+                });
+    
+                this.dataset.selected = "true";
+    
+                // document.querySelector("iframe").src = this.dataset.src;
+    
+                const iframe = document.querySelector("iframe");
+    
+                const proxyURL = `/api/proxy?url=${encodeURIComponent(this.dataset.src)}`;
+                iframe.src = proxyURL;
+                
+                // Optional: Add load handlers
+                iframe.addEventListener('load', () => {
+                    console.log('Iframe loaded:', targetURL);
+                });
+                
+                iframe.addEventListener('error', (e) => {
+                    // console.error('Iframe error:', e);
+                });
+                
+                viewer.querySelector("h1").dataset.active = "false";
+                viewer.querySelector("iframe").dataset.active = "true";
+    
+            }, false);
+
+            docFrag.appendChild(articleEl);
+    
+        });
+
+        feedScroller.innerHTML = "";
+        feedScroller.appendChild(docFrag);
+
+    }
+
+    GetArticles()
+        .then(articles => processArticles(articles))
+        .catch(err => {
+            console.log("GetArticles err:", err);
+        })
+    ;
+
     console.log("Ready.");
 
 }());
