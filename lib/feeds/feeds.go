@@ -37,21 +37,25 @@ func NewFeedsInterface() *Feeds {
 	return &Feeds{}
 }
 
-func (f *Feeds) ListFeeds(hash string) ([]Feed){
+func (f *Feeds) Startup(ctx context.Context) {
+	f.ctx = ctx
+}
 
+func (f *Feeds) ListFeeds() []Feed {
+	
 	db := database.Get()
-	var feeds []Feed
+	feeds := []Feed{}
 
-	rows, err := db.Query("SELECT * FROM feeds")
+	rows, err := db.Query("SELECT name, url, icon, hash FROM feeds")
 	if err != nil {
-		log.Printf("Failed to list routes: %v", err)
+		log.Printf("Failed to list feeds: %v", err)
 		return feeds
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var feed Feed
-		err := rows.Scan(&feed)
+		err := rows.Scan(&feed.Name, &feed.URL, &feed.Icon, &feed.Hash)
 		if err != nil {
 			log.Printf("Failed to scan row: %v", err)
 			continue
@@ -60,4 +64,21 @@ func (f *Feeds) ListFeeds(hash string) ([]Feed){
 	}
 
 	return feeds
+
+}
+
+func (f *Feeds) AddFeed(feed Feed) error {
+
+	db := database.Get()
+	
+	query := `INSERT INTO feeds (name, url, icon, hash) VALUES (?, ?, ?, ?)`
+	
+	_, err := db.Exec(query, feed.Name, feed.URL, feed.Icon, feed.Hash)
+	if err != nil {
+		log.Printf("Failed to add feed: %v", err)
+		return err
+	}
+	
+	return nil
+
 }

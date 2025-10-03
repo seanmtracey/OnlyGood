@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"context"
 
 	"onlygood/lib/app"
 	"onlygood/lib/feeds"
@@ -124,7 +125,10 @@ func main() {
 			),
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.Startup,
+		OnStartup: func(ctx context.Context) {
+			app.Startup(ctx)
+			feedsInterface.Startup(ctx) // Initialize the context
+		},
 		Bind: []interface{}{
 			app,
 			feedsInterface,

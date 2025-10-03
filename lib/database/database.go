@@ -31,7 +31,8 @@ func InitDB() {
 	// Database path
 	dbPath := filepath.Join(appDataDir, "onlygood.db")
 	
-	db, openDBErr := sql.Open("sqlite", dbPath)
+	var openDBErr error
+	db, openDBErr = sql.Open("sqlite", dbPath)
 	if openDBErr != nil {
 		log.Fatalf("Failed to connect to database: %v", openDBErr)
 	}
