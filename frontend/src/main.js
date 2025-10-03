@@ -1,3 +1,4 @@
+import { WindowToggleMaximise } from '../wailsjs/runtime/runtime'
 import { GetArticles, Echo } from '../wailsjs/go/app/App'
 import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
 
@@ -8,6 +9,7 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
     const sources = document.querySelector("section#sources");
     const feed = document.querySelector("section#feed");
     const viewer = document.querySelector("section#viewer");
+    const stretchWindow = document.querySelector("#stretchWindow");
     
     const addFeedBtn = sources.querySelector("button#addFeedBtn");
     const dialogBtns = Array.from(document.querySelectorAll(".overlay button.close"));
@@ -110,13 +112,13 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
         const sources = document.querySelector("section#sources");
         const docFrag = document.createDocumentFragment();
 
-        feeds.forEach(feed => {
+        feeds.forEach(thisFeed => {
 
             const feedItemTemplate = document.createElement("template");
             const feedItemTemplateContent = `
-                <li data-src="${feed.url}">
-                    <img src="${feed.icon}" />
-                    <p>${feed.name}</p>
+                <li data-src="${thisFeed.url}" data-name="${thisFeed.name}">
+                    <img src="${thisFeed.icon}" />
+                    <p>${thisFeed.name}</p>
                     <span data-sentiment="positive"></span>
                 </li>
             `;
@@ -132,6 +134,8 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
                 e.stopImmediatePropagation();
 
                 console.log(this);
+
+                feed.querySelector("#feedTitle h1").textContent = this.dataset.name;
 
             });
 
@@ -168,6 +172,17 @@ import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
         }, false);
 
     });
+
+    stretchWindow.addEventListener("click", function(e){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        console.log("Stretch!");
+
+        WindowToggleMaximise();
+
+    }, false);
 
     ListFeeds()
         .then(feeds => processFeeds(feeds))
