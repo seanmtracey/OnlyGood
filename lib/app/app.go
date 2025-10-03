@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -26,7 +26,7 @@ func NewApp() *App {
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
@@ -37,7 +37,7 @@ func (a *App) Echo(value string) string {
 
 func (a *App)GetArticles() []Article{
 
-	var articles = []Article{
+	/*var articles = []Article{
 		{
 			Title: "Eyewitnesses describe Manchester synagogue attack",
 			Content: "Some content",
@@ -62,7 +62,7 @@ func (a *App)GetArticles() []Article{
 			URL: "https://www.bbc.co.uk/news/articles/cvgq06d44jyo",
 			AlreadyRead: true,
 		},
-	}
+	}*/
 
-	return articles
+	return []Article{}
 }

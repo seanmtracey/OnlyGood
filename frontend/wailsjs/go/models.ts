@@ -1,4 +1,4 @@
-export namespace main {
+export namespace app {
 	
 	export class Article {
 	    title: string;
@@ -20,6 +20,27 @@ export namespace main {
 	        this.sentimentScore = source["sentimentScore"];
 	        this.url = source["url"];
 	        this.alreadyRead = source["alreadyRead"];
+	    }
+	}
+
+}
+
+export namespace feeds {
+	
+	export class Feed {
+	    name: string;
+	    url: string;
+	    icon: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Feed(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.url = source["url"];
+	        this.icon = source["icon"];
 	    }
 	}
 

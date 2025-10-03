@@ -155,7 +155,7 @@ main section#sources ol li:hover p{
 }
 
 main section#sources ol li img{
-    height: 1em;
+    width: 2em;
 }
 
 main section#sources ol li p{

@@ -7,6 +7,9 @@ import (
 	"net/url"
 	"strings"
 
+	"onlygood/lib/app"
+	"onlygood/lib/feeds"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -69,7 +72,6 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-
 			return nil
 		},
 	}
@@ -106,7 +108,8 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	app := NewApp()
+	app := app.NewApp()
+	feedsInterface := feeds.NewFeedsInterface()
 
 	err := wails.Run(&options.App{
 		Title:  "OnlyGood",
@@ -119,9 +122,10 @@ func main() {
 			),
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
+		OnStartup:        app.Startup,
 		Bind: []interface{}{
 			app,
+			feedsInterface,
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{

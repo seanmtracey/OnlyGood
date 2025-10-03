@@ -1,4 +1,4 @@
-module changeme
+module onlygood
 
 go 1.23.7
 

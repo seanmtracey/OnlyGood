@@ -1,5 +1,5 @@
-import { Echo } from '../wailsjs/go/main/App';
-import { GetArticles } from '../wailsjs/go/main/App';
+import { GetArticles, Echo } from '../wailsjs/go/app/App'
+import { ListFeeds } from '../wailsjs/go/feeds/Feeds'
 
 (async function(){
 
@@ -19,7 +19,7 @@ import { GetArticles } from '../wailsjs/go/main/App';
 
     function processArticles(articles){
         
-        console.log("articles:", articles);
+        // console.log("articles:", articles);
         const feedScroller = feed.querySelector("#feedScroller");
 
         const docFrag = document.createDocumentFragment();
@@ -103,6 +103,49 @@ import { GetArticles } from '../wailsjs/go/main/App';
 
     }
 
+    function processFeeds(feeds){
+
+        console.log(feeds);
+
+        const sources = document.querySelector("section#sources");
+        const docFrag = document.createDocumentFragment();
+
+        feeds.forEach(feed => {
+
+            const feedItemTemplate = document.createElement("template");
+            const feedItemTemplateContent = `
+                <li data-src="${feed.url}">
+                    <img src="${feed.icon}" />
+                    <p>${feed.name}</p>
+                    <span data-sentiment="positive"></span>
+                </li>
+            `;
+
+            feedItemTemplate.innerHTML = feedItemTemplateContent;
+
+            const feedItemNode = feedItemTemplate.content.cloneNode(true);
+            const feedItemEl = feedItemNode.querySelector("li");
+            console.log("feedItemEl:", feedItemEl);
+
+            feedItemEl.addEventListener("click", function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                console.log(this);
+
+            });
+
+            docFrag.appendChild(feedItemEl);
+
+        });
+
+        const sourcesListEl = sources.querySelector("ol");
+
+        sourcesListEl.innerHTML = "";
+        sourcesListEl.appendChild(docFrag);
+
+    }
+
     addFeedBtn.addEventListener("click", function(){
 
         const addFeedOverlay = document.querySelector("#addFeed");
@@ -126,12 +169,19 @@ import { GetArticles } from '../wailsjs/go/main/App';
 
     });
 
-    GetArticles()
+    ListFeeds()
+        .then(feeds => processFeeds(feeds))
+        .catch(err => {
+            console.log("ListFeeds err:", err);
+        })
+    ;
+
+    /*GetArticles()
         .then(articles => processArticles(articles))
         .catch(err => {
             console.log("GetArticles err:", err);
         })
-    ;
+    ;*/
 
     console.log("Ready.");
 
