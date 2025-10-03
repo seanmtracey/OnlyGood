@@ -15,7 +15,7 @@
 
             <div id="feedTitle">
                 <h3>Feeds</h3>
-                <button id="addFeed">
+                <button id="addFeedBtn">
                     <img src="/src/assets/images/add_icon.png" />
                 </button>
             </div>
@@ -80,6 +80,19 @@
         </section>
 
     </main>
+
+    <div id="addFeed" class="overlay" data-active="false">
+
+        <form action="POST">
+            <button class="close">
+                <img src="/src/assets/images/close_icon.png" />
+            </button>
+            <h2>Add Feed</h2>
+            <input type="url" placeholder="Enter the RSS Feed URL here..." required/>
+            <input type="submit" value="Save" />
+        </form>
+
+    </div>
 
 <script src="./src/main.js" type="module"></script>
 </body>

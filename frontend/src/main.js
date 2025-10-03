@@ -5,16 +5,18 @@ import { GetArticles } from '../wailsjs/go/main/App';
 
     'use strict';
 
+    const sources = document.querySelector("section#sources");
     const feed = document.querySelector("section#feed");
     const viewer = document.querySelector("section#viewer");
-    // const articles = document.querySelectorAll("article");
+    
+    const addFeedBtn = sources.querySelector("button#addFeedBtn");
+    const dialogBtns = Array.from(document.querySelectorAll(".overlay button.close"));
 
     viewer.addEventListener("click", function(e){
         e.preventDefault();
         e.stopImmediatePropagation();
     }, true);
 
-    
     function processArticles(articles){
         
         console.log("articles:", articles);
@@ -100,6 +102,29 @@ import { GetArticles } from '../wailsjs/go/main/App';
         feedScroller.appendChild(docFrag);
 
     }
+
+    addFeedBtn.addEventListener("click", function(){
+
+        const addFeedOverlay = document.querySelector("#addFeed");
+        addFeedOverlay.dataset.active = "true";
+
+    }, false);
+
+    dialogBtns.forEach(closeBtn => {
+
+        closeBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            const overlayToClose = this.parentNode.parentNode;
+            const formToReset = overlayToClose.querySelector("form");
+
+            overlayToClose.dataset.active = "false";
+            formToReset.reset();
+
+        }, false);
+
+    });
 
     GetArticles()
         .then(articles => processArticles(articles))
