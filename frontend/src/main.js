@@ -171,7 +171,7 @@ import { ListFeeds, AddFeed, GetArticlesForFeed } from '../wailsjs/go/feeds/Feed
 
                 console.log(this);
 
-                feed.querySelector("#feedTitle h1").textContent = this.dataset.name;
+                feed.querySelector("#feedName h1").textContent = this.dataset.name;
                 
                 GetArticlesForFeed(this.dataset.hash)
                     .then(articles => processArticles(articles))
