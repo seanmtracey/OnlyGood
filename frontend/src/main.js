@@ -1,6 +1,6 @@
 import { WindowToggleMaximise } from '../wailsjs/runtime/runtime'
-import { GetArticles, Echo } from '../wailsjs/go/app/App'
-import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
+
+import { ListFeeds, AddFeed, GetArticlesForFeed } from '../wailsjs/go/feeds/Feeds'
 
 (async function(){
 
@@ -23,13 +23,17 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
 
     function processArticles(articles){
         
-        // console.log("articles:", articles);
+        console.log("articles:", articles);
         const feedScroller = feed.querySelector("#feedScroller");
 
         const docFrag = document.createDocumentFragment();
 
         articles.forEach(article => {
             
+            if(article.sentimentScore < 0){
+                delete article.sentimentScore;
+            }
+
             const articleTemplate = document.createElement("template");
             const articleTemplateContent = `
 
@@ -46,7 +50,7 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
                                 <div class="newIndicator" data-read="${article.alreadyRead}"></div>
                             </div>
                             <div class="bottomSection">
-                                <span class="score">${article.sentimentScore * 100 | 0}% Positive</span>
+                                <span class="score">${!!article.sentimentScore ? (article.sentimentScore * 100 | 0) + "% Positive" : "Not Scored"}</span>
                                 <span class="lastUpdate">5 minutes ago</span>
                             </div>
     
@@ -86,7 +90,7 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
                 
                 // Optional: Add load handlers
                 iframe.addEventListener('load', () => {
-                    console.log('Iframe loaded:', targetURL);
+                    console.log('Iframe loaded:', proxyURL);
                 });
                 
                 iframe.addEventListener('error', (e) => {
@@ -135,13 +139,20 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
             const feedItemEl = feedItemNode.querySelector("li");
             console.log("feedItemEl:", feedItemEl);
 
-            feedItemEl.addEventListener("click", function(e){
+            feedItemEl.addEventListener("click", async function(e){
                 e.preventDefault();
                 e.stopImmediatePropagation();
 
                 console.log(this);
 
                 feed.querySelector("#feedTitle h1").textContent = this.dataset.name;
+                
+                GetArticlesForFeed(this.dataset.hash)
+                    .then(articles => processArticles(articles))
+                    .catch(err => {
+                        console.log("GetArticlesForFeed err:", err);
+                    })
+                ;
 
             });
 
@@ -237,18 +248,3 @@ import { ListFeeds, AddFeed } from '../wailsjs/go/feeds/Feeds'
     console.log("Ready.");
 
 }());
-
-// Setup the greet function
-window.echo = function (value) {
-
-    Echo(value)
-        .then((result) => {
-            // Update result with data back from App.Greet()
-            console.log(result);
-        })
-        .catch((err) => {
-            console.error(err);
-        })
-    ;
-
-};

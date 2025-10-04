@@ -1,10 +1,14 @@
 package feeds
 
 import(
+	"io"
 	"log"
 	"context"
+	"strings"
+	"net/http"
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/xml"
 
 	"onlygood/lib/database"
 )
@@ -18,6 +22,31 @@ type Feed struct {
 	URL string `json:"url"`
 	Icon string `json:"icon"`
 	Hash string `json:"hash"`
+}
+
+type Article struct {
+	Title string `json:"title"`
+	Content string `json:"content"`
+	SentimentGroup string `json:"sentimentGroup"`
+	SentimentScore float64 `json:"sentimentScore"`
+	URL string `json:"url"`
+	AlreadyRead bool `json:"alreadyRead"`
+}
+
+type RSS struct {
+	XMLName xml.Name `xml:"rss"`
+	Channel Channel  `xml:"channel"`
+}
+
+type Channel struct {
+	Title string `xml:"title"`
+	Items []Item `xml:"item"`
+}
+
+type Item struct {
+	Title       string `xml:"title"`
+	Link        string `xml:"link"`
+	Description string `xml:"description"`
 }
 
 func NewFeedsInterface() *Feeds {
@@ -71,5 +100,68 @@ func (f *Feeds) AddFeed(feed Feed) error {
 	}
 	
 	return nil
+
+}
+
+func (f *Feeds) GetArticlesForFeed(feedHash string) []Article {
+
+	var articles = []Article{}
+
+	db := database.Get()
+
+	query := `SELECT url FROM feeds WHERE hash = ?`
+
+	var feedURL string
+	err := db.QueryRow(query, feedHash).Scan(&feedURL)
+	if err != nil {
+		log.Printf("Failed to get feed for hash: %v", err)
+		return articles
+	}
+
+	// Fetch RSS feed
+	resp, err := http.Get(feedURL)
+	if err != nil {
+		log.Printf("Failed to fetch RSS feed: %v", err)
+		return articles
+	}
+	defer resp.Body.Close()
+
+	// Read response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Failed to read RSS feed body: %v", err)
+		return articles
+	}
+
+	// Parse RSS XML
+	var rss RSS
+	err = xml.Unmarshal(body, &rss)
+	if err != nil {
+		log.Printf("Failed to parse RSS XML: %v", err)
+		return articles
+	}
+
+	// Convert RSS items to Article structs
+	for _, item := range rss.Channel.Items {
+
+		cleanURL := item.Link
+		if idx := strings.Index(item.Link, "?"); idx != -1 {
+			cleanURL = item.Link[:idx]
+		}
+
+		article := Article{
+			Title:          item.Title,
+			Content:        item.Description,
+			URL:            cleanURL,
+			SentimentGroup: "unknown",
+			SentimentScore: -1.0,
+			AlreadyRead:    false,
+		}
+		articles = append(articles, article)
+	}
+
+	log.Printf("Fetched %d articles from %s\n", len(articles), feedURL)
+
+	return articles
 
 }

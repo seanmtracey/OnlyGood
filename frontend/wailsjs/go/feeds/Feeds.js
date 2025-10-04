@@ -6,6 +6,10 @@ export function AddFeed(arg1) {
   return window['go']['feeds']['Feeds']['AddFeed'](arg1);
 }
 
+export function GetArticlesForFeed(arg1) {
+  return window['go']['feeds']['Feeds']['GetArticlesForFeed'](arg1);
+}
+
 export function ListFeeds() {
   return window['go']['feeds']['Feeds']['ListFeeds']();
 }

@@ -1,4 +1,4 @@
-export namespace app {
+export namespace feeds {
 	
 	export class Article {
 	    title: string;
@@ -22,11 +22,6 @@ export namespace app {
 	        this.alreadyRead = source["alreadyRead"];
 	    }
 	}
-
-}
-
-export namespace feeds {
-	
 	export class Feed {
 	    name: string;
 	    url: string;

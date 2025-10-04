@@ -6,10 +6,6 @@ export function Echo(arg1) {
   return window['go']['app']['App']['Echo'](arg1);
 }
 
-export function GetArticles() {
-  return window['go']['app']['App']['GetArticles']();
-}
-
 export function Startup(arg1) {
   return window['go']['app']['App']['Startup'](arg1);
 }

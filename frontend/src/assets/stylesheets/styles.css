@@ -93,8 +93,8 @@ button img{
 
 #stretchWindow{
     position: fixed;
-    top: 0.5em;
-    right: 0.75em;
+    top: 0em;
+    right: 0.5em;
     opacity: 0.5;
     cursor: pointer;
 }
@@ -300,6 +300,10 @@ main section#feed article.piece .articleContent{
     border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
+main section#feed article.piece .articleContent .content{
+    width: 100%;
+}
+
 main section#feed article.piece[data-selected="true"] .articleContent{
     background-color: white;
 }
@@ -327,7 +331,7 @@ main section#feed article.piece .articleContent .content .topSection h1{
     line-height: 1.4em;
     font-size: 1em;
     font-weight: 200;
-    max-width: 95%;
+    width: 95%;
 
     display: -webkit-box;
     line-clamp: 2;
@@ -398,7 +402,9 @@ main section#viewer iframe{
     /* border-left: 1px solid rgba(255, 255, 255, 0.29); */
     position: absolute;
     border-radius: 15px;
-    pointer-events: none;
+    /* pointer-events: none; */
+    overflow-y: scroll;
+    background-color: white;
 }
 
 /* main section#viewer iframe[src=""]{

@@ -5,6 +5,8 @@ import {context} from '../models';
 
 export function AddFeed(arg1:feeds.Feed):Promise<void>;
 
+export function GetArticlesForFeed(arg1:string):Promise<Array<feeds.Article>>;
+
 export function ListFeeds():Promise<Array<feeds.Feed>>;
 
 export function Startup(arg1:context.Context):Promise<void>;
