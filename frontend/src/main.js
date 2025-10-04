@@ -10,11 +10,39 @@ import { ListFeeds, AddFeed, GetArticlesForFeed } from '../wailsjs/go/feeds/Feed
     const feed = document.querySelector("section#feed");
     const viewer = document.querySelector("section#viewer");
     const stretchWindow = document.querySelector("#stretchWindow");
+
+    const iframe = document.querySelector("iframe");
     
     const addFeedBtn = sources.querySelector("button#addFeedBtn");
     const dialogBtns = Array.from(document.querySelectorAll(".overlay button.close"));
 
     const addFeedOverlay = document.querySelector(".overlay#addFeed");
+
+    const initialAttributes = new Set();
+    for (let attr of iframe.attributes) {
+        initialAttributes.add(attr.name);
+    }
+
+    // Create a MutationObserver to watch for attribute changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes') {
+                const attrName = mutation.attributeName;
+                
+                // If this attribute wasn't there initially, remove it
+                if (!initialAttributes.has(attrName)) {
+                    iframe.removeAttribute(attrName);
+                    console.log(`Removed unwanted attribute: ${attrName}`);
+                }
+            }
+        });
+    });
+
+    // Start observing attribute changes
+    observer.observe(iframe, {
+        attributes: true,
+        attributeOldValue: true
+    });
 
     viewer.addEventListener("click", function(e){
         e.preventDefault();
@@ -82,8 +110,6 @@ import { ListFeeds, AddFeed, GetArticlesForFeed } from '../wailsjs/go/feeds/Feed
                 this.dataset.selected = "true";
     
                 // document.querySelector("iframe").src = this.dataset.src;
-    
-                const iframe = document.querySelector("iframe");
     
                 const proxyURL = `/api/proxy?url=${encodeURIComponent(this.dataset.src)}`;
                 iframe.src = proxyURL;
