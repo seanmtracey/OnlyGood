@@ -7,6 +7,7 @@ export namespace feeds {
 	    sentimentScore: number;
 	    url: string;
 	    alreadyRead: boolean;
+	    hash: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Article(source);
@@ -20,6 +21,7 @@ export namespace feeds {
 	        this.sentimentScore = source["sentimentScore"];
 	        this.url = source["url"];
 	        this.alreadyRead = source["alreadyRead"];
+	        this.hash = source["hash"];
 	    }
 	}
 	export class Feed {

@@ -6,11 +6,14 @@ import(
 	"context"
 	"strings"
 	"net/http"
+	"net/url"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/xml"
 
 	"onlygood/lib/database"
+
+	readability "github.com/go-shiori/go-readability"
 )
 
 type Feeds struct {
@@ -31,6 +34,7 @@ type Article struct {
 	SentimentScore float64 `json:"sentimentScore"`
 	URL string `json:"url"`
 	AlreadyRead bool `json:"alreadyRead"`
+	Hash string `json:"hash"`
 }
 
 type RSS struct {
@@ -51,6 +55,40 @@ type Item struct {
 
 func NewFeedsInterface() *Feeds {
 	return &Feeds{}
+}
+
+func hashValue(valueToHash string) (string){
+	
+	hasher := sha1.New()
+	hasher.Write([]byte(valueToHash))
+	result := hex.EncodeToString(hasher.Sum(nil))
+
+	return result
+
+}
+
+func ProcessArticle(articleURL string) {
+
+	resp, err := http.Get(articleURL)
+	if err != nil {
+		log.Printf("failed to download %s: %v\n", articleURL, err)
+		resp.Body.Close()
+		return
+	}
+	defer resp.Body.Close()
+
+	parsedURL, err := url.Parse(articleURL)
+	if err != nil {
+		log.Fatalf("error parsing url")
+	}
+
+	article, err := readability.FromReader(resp.Body, parsedURL)
+	if err != nil {
+		log.Fatalf("failed to parse %s: %v\n", articleURL, err)
+	}
+
+	log.Printf("Content for %s:\n%s\n", articleURL, article.TextContent)
+
 }
 
 func (f *Feeds) Startup(ctx context.Context) {
@@ -86,10 +124,8 @@ func (f *Feeds) ListFeeds() []Feed {
 func (f *Feeds) AddFeed(feed Feed) error {
 
 	db := database.Get()
-	
-	hasher := sha1.New()
-	hasher.Write([]byte(feed.URL))
-	feed.Hash = hex.EncodeToString(hasher.Sum(nil))
+
+	feed.Hash = hashValue(feed.URL)
 	
 	query := `INSERT INTO feeds (name, url, icon, hash) VALUES (?, ?, ?, ?)`
 	
@@ -149,15 +185,20 @@ func (f *Feeds) GetArticlesForFeed(feedHash string) []Article {
 			cleanURL = item.Link[:idx]
 		}
 
+		go ProcessArticle(cleanURL)
+
 		article := Article{
-			Title:          item.Title,
-			Content:        item.Description,
-			URL:            cleanURL,
+			Title: item.Title,
+			Content: item.Description,
+			URL: cleanURL,
 			SentimentGroup: "unknown",
 			SentimentScore: -1.0,
-			AlreadyRead:    false,
+			AlreadyRead: false,
+			Hash: hashValue(cleanURL),
 		}
+
 		articles = append(articles, article)
+
 	}
 
 	log.Printf("Fetched %d articles from %s\n", len(articles), feedURL)
