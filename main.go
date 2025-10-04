@@ -3,10 +3,12 @@ package main
 import (
 	"embed"
 	"io"
-	"net/http"
-	"net/url"
+	"log"
 	"strings"
 	"context"
+	"bytes"
+	"net/http"
+	"net/url"
 
 	"onlygood/lib/app"
 	"onlygood/lib/feeds"
@@ -16,10 +18,91 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"golang.org/x/net/html"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+func rewriteURL(originalURL string, baseURL *url.URL) string {
+
+	if strings.HasPrefix(originalURL, "data:") || 
+	   strings.HasPrefix(originalURL, "javascript:") ||
+	   strings.HasPrefix(originalURL, "mailto:") ||
+	   strings.HasPrefix(originalURL, "#") ||
+	   originalURL == "" {
+		return originalURL
+	}
+
+	parsedURL, err := url.Parse(originalURL)
+	if err != nil {
+		return originalURL
+	}
+
+	absoluteURL := baseURL.ResolveReference(parsedURL)
+
+	return "/api/proxy?url=" + url.QueryEscape(absoluteURL.String())
+
+}
+
+func rewriteHTML(htmlContent []byte, baseURL *url.URL) []byte {
+
+	doc, err := html.Parse(bytes.NewReader(htmlContent))
+	if err != nil {
+		log.Printf("Failed to parse HTML: %v", err)
+		return htmlContent
+	}
+
+	var rewrite func(*html.Node)
+	rewrite = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			// Rewrite <a href="...">
+			if n.Data == "a" {
+				for i, attr := range n.Attr {
+					if attr.Key == "href" {
+						n.Attr[i].Val = rewriteURL(attr.Val, baseURL)
+					}
+				}
+			}
+			// Rewrite <img src="...">
+			if n.Data == "img" {
+				for i, attr := range n.Attr {
+					if attr.Key == "src" {
+						n.Attr[i].Val = rewriteURL(attr.Val, baseURL)
+					}
+				}
+			}
+			// Rewrite <link href="..."> (CSS)
+			if n.Data == "link" {
+				for i, attr := range n.Attr {
+					if attr.Key == "href" {
+						n.Attr[i].Val = rewriteURL(attr.Val, baseURL)
+					}
+				}
+			}
+			// Rewrite <script src="...">
+			if n.Data == "script" {
+				for i, attr := range n.Attr {
+					if attr.Key == "src" {
+						n.Attr[i].Val = rewriteURL(attr.Val, baseURL)
+					}
+				}
+			}
+		}
+		
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			rewrite(c)
+		}
+	}
+
+	rewrite(doc)
+
+	var buf bytes.Buffer
+	html.Render(&buf, doc)
+	return buf.Bytes()
+
+}
+
 func proxyMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -104,8 +187,20 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response", http.StatusInternalServerError)
+		return
+	}
+
+	contentType := resp.Header.Get("Content-Type")
+	if strings.Contains(contentType, "text/html") {
+		body = rewriteHTML(body, parsedURL)
+	}
+
 	w.WriteHeader(resp.StatusCode)
-	io.Copy(w, resp.Body)
+	w.Write(body)
+
 }
 
 func main() {
